@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>X Project - UI/UX Design Quote</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .checkbox-item:has(input:checked) { background-color: rgb(239 246 255); border-color: rgb(59 130 246); }
         .radio-item:has(input:checked) { background-color: rgb(239 246 255); border-color: rgb(59 130 246); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .accordion-content.open { max-height: 1000px; }
+        .accordion-icon { transition: transform 0.3s ease; }
+        .accordion-icon.open { transform: rotate(180deg); }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -53,173 +55,313 @@
             </div>
         </div>
 
-        <!-- Design Phases -->
+        <!-- Design Outputs -->
         <section class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold text-gray-900">Design Phases</h2>
-                <button onclick="toggleAllPhases()" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Select All</button>
+                <h2 class="text-lg font-semibold text-gray-900">Design Outputs</h2>
+                <p class="text-sm text-gray-500">Base package (included)</p>
             </div>
 
-            <div class="space-y-3" id="phases-container">
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="phase" value="discovery" data-hours="10" data-price="150" checked class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Discovery</p>
-                            <p class="text-sm text-gray-500">Industry flows, competitive analysis</p>
+            <div class="space-y-3" id="outputs-container">
+                <!-- Discovery -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button onclick="toggleAccordion('discovery')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-medium text-gray-900">Discovery</p>
+                                <p class="text-sm text-gray-500">Research & analysis</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="font-semibold text-gray-900">$150</p>
+                                <p class="text-xs text-gray-500">10h</p>
+                            </div>
+                            <svg id="discovery-icon" class="accordion-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </button>
+                    <div id="discovery-content" class="accordion-content">
+                        <div class="p-4 border-t border-gray-100 bg-white">
+                            <table class="w-full text-sm">
+                                <thead><tr class="text-gray-500 text-left"><th class="pb-2">Task</th><th class="pb-2 text-right">Hours</th><th class="pb-2 text-right">Price</th></tr></thead>
+                                <tbody class="text-gray-700">
+                                    <tr><td class="py-1">Industry standard flows research</td><td class="text-right">4h</td><td class="text-right">$60</td></tr>
+                                    <tr><td class="py-1">User journey mapping</td><td class="text-right">3h</td><td class="text-right">$45</td></tr>
+                                    <tr><td class="py-1">Requirements documentation</td><td class="text-right">3h</td><td class="text-right">$45</td></tr>
+                                </tbody>
+                                <tfoot><tr class="font-medium border-t border-gray-100"><td class="pt-2">Total</td><td class="pt-2 text-right">10h</td><td class="pt-2 text-right">$150</td></tr></tfoot>
+                            </table>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$150</p>
-                        <p class="text-xs text-gray-500">10h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="phase" value="wireframes" data-hours="16" data-price="240" checked class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Wireframes</p>
-                            <p class="text-sm text-gray-500">Flow diagrams for 4 workflows</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$240</p>
-                        <p class="text-xs text-gray-500">16h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="phase" value="design-system" data-hours="3" data-price="45" checked class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Design System</p>
-                            <p class="text-sm text-gray-500">UI kit setup, tokens, components</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$45</p>
-                        <p class="text-xs text-gray-500">3h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="phase" value="hifi-screens" data-hours="64" data-price="960" checked class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Hi-Fi App Screens</p>
-                            <p class="text-sm text-gray-500">30 unique mobile screens</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$960</p>
-                        <p class="text-xs text-gray-500">64h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="phase" value="prototype" data-hours="8" data-price="120" checked class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Interactive Prototype</p>
-                            <p class="text-sm text-gray-500">4 core workflow demos</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$120</p>
-                        <p class="text-xs text-gray-500">8h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="phase" value="handoff" data-hours="8" data-price="120" checked class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Developer Handoff</p>
-                            <p class="text-sm text-gray-500">Interaction notes, dev specs</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$120</p>
-                        <p class="text-xs text-gray-500">8h</p>
-                    </div>
-                </label>
-            </div>
-        </section>
-
-        <!-- Landing Page Sections -->
-        <section class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-900">Landing Page Sections</h2>
-                    <p class="text-sm text-gray-500">1.5h × $15 = $23 each</p>
                 </div>
-                <button onclick="toggleAllLanding()" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Select All</button>
+
+                <!-- Wireframes -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button onclick="toggleAccordion('wireframes')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-medium text-gray-900">Wireframes</p>
+                                <p class="text-sm text-gray-500">Flow diagrams for 4 workflows</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="font-semibold text-gray-900">$240</p>
+                                <p class="text-xs text-gray-500">16h</p>
+                            </div>
+                            <svg id="wireframes-icon" class="accordion-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </button>
+                    <div id="wireframes-content" class="accordion-content">
+                        <div class="p-4 border-t border-gray-100 bg-white">
+                            <table class="w-full text-sm">
+                                <thead><tr class="text-gray-500 text-left"><th class="pb-2">Workflow</th><th class="pb-2 text-right">Hours</th><th class="pb-2 text-right">Price</th></tr></thead>
+                                <tbody class="text-gray-700">
+                                    <tr><td class="py-1">Service Request Intake flow</td><td class="text-right">4h</td><td class="text-right">$60</td></tr>
+                                    <tr><td class="py-1">Task Creation & Assignment flow</td><td class="text-right">4h</td><td class="text-right">$60</td></tr>
+                                    <tr><td class="py-1">Status Tracking & Workflow flow</td><td class="text-right">4h</td><td class="text-right">$60</td></tr>
+                                    <tr><td class="py-1">Team Management flow</td><td class="text-right">4h</td><td class="text-right">$60</td></tr>
+                                </tbody>
+                                <tfoot><tr class="font-medium border-t border-gray-100"><td class="pt-2">Total</td><td class="pt-2 text-right">16h</td><td class="pt-2 text-right">$240</td></tr></tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Design System -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button onclick="toggleAccordion('designsystem')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-medium text-gray-900">Design System</p>
+                                <p class="text-sm text-gray-500">UI kit setup, tokens, components</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="font-semibold text-gray-900">$45</p>
+                                <p class="text-xs text-gray-500">3h</p>
+                            </div>
+                            <svg id="designsystem-icon" class="accordion-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </button>
+                    <div id="designsystem-content" class="accordion-content">
+                        <div class="p-4 border-t border-gray-100 bg-white">
+                            <table class="w-full text-sm">
+                                <thead><tr class="text-gray-500 text-left"><th class="pb-2">Task</th><th class="pb-2 text-right">Hours</th><th class="pb-2 text-right">Price</th></tr></thead>
+                                <tbody class="text-gray-700">
+                                    <tr><td class="py-1">Color & typography tokens</td><td class="text-right">1h</td><td class="text-right">$15</td></tr>
+                                    <tr><td class="py-1">Component library setup</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1">Spacing & grid system</td><td class="text-right">0.5h</td><td class="text-right">$7</td></tr>
+                                </tbody>
+                                <tfoot><tr class="font-medium border-t border-gray-100"><td class="pt-2">Total</td><td class="pt-2 text-right">3h</td><td class="pt-2 text-right">$45</td></tr></tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hi-Fi App Screens -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button onclick="toggleAccordion('hifi')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-medium text-gray-900">Hi-Fi App Screens</p>
+                                <p class="text-sm text-gray-500">30 unique mobile screens</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="font-semibold text-gray-900">$960</p>
+                                <p class="text-xs text-gray-500">64h</p>
+                            </div>
+                            <svg id="hifi-icon" class="accordion-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </button>
+                    <div id="hifi-content" class="accordion-content">
+                        <div class="p-4 border-t border-gray-100 bg-white">
+                            <table class="w-full text-sm">
+                                <thead><tr class="text-gray-500 text-left"><th class="pb-2">Workflow / Screens</th><th class="pb-2 text-right">Hours</th><th class="pb-2 text-right">Price</th></tr></thead>
+                                <tbody class="text-gray-700">
+                                    <tr class="bg-gray-50"><td class="py-2 font-medium" colspan="3">Request Intake (6 screens)</td></tr>
+                                    <tr><td class="py-1 pl-4">Request List/Inbox</td><td class="text-right">2.5h</td><td class="text-right">$38</td></tr>
+                                    <tr><td class="py-1 pl-4">Create Request Form</td><td class="text-right">2.5h</td><td class="text-right">$38</td></tr>
+                                    <tr><td class="py-1 pl-4">Request Detail View</td><td class="text-right">3h</td><td class="text-right">$45</td></tr>
+                                    <tr><td class="py-1 pl-4">Customer Self-Service Form</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1 pl-4">Customer Status View</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1 pl-4">Quick Actions Modal</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr class="bg-gray-50"><td class="py-2 font-medium" colspan="3">Task Management (5 screens)</td></tr>
+                                    <tr><td class="py-1 pl-4">Task List View</td><td class="text-right">2.5h</td><td class="text-right">$38</td></tr>
+                                    <tr><td class="py-1 pl-4">Create Task</td><td class="text-right">2.5h</td><td class="text-right">$38</td></tr>
+                                    <tr><td class="py-1 pl-4">Task Detail View</td><td class="text-right">3h</td><td class="text-right">$45</td></tr>
+                                    <tr><td class="py-1 pl-4">Assignment Interface</td><td class="text-right">2.5h</td><td class="text-right">$38</td></tr>
+                                    <tr><td class="py-1 pl-4">Task Complete Flow</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr class="bg-gray-50"><td class="py-2 font-medium" colspan="3">Status Tracking (5 screens)</td></tr>
+                                    <tr><td class="py-1 pl-4">Kanban Board</td><td class="text-right">5h</td><td class="text-right">$75</td></tr>
+                                    <tr><td class="py-1 pl-4">List View</td><td class="text-right">2.5h</td><td class="text-right">$38</td></tr>
+                                    <tr><td class="py-1 pl-4">Basic Dashboard</td><td class="text-right">3h</td><td class="text-right">$45</td></tr>
+                                    <tr><td class="py-1 pl-4">Stage Config (Admin)</td><td class="text-right">2.5h</td><td class="text-right">$38</td></tr>
+                                    <tr><td class="py-1 pl-4">Move Confirmation Modal</td><td class="text-right">1h</td><td class="text-right">$15</td></tr>
+                                    <tr class="bg-gray-50"><td class="py-2 font-medium" colspan="3">Team Management (4 screens)</td></tr>
+                                    <tr><td class="py-1 pl-4">Team Directory</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1 pl-4">Invite via Email</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1 pl-4">Member Profile</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1 pl-4">Edit Member Modal</td><td class="text-right">1h</td><td class="text-right">$15</td></tr>
+                                    <tr class="bg-gray-50"><td class="py-2 font-medium" colspan="3">Global/System (10 screens)</td></tr>
+                                    <tr><td class="py-1 pl-4">Sign Up Flow (2 steps)</td><td class="text-right">3h</td><td class="text-right">$45</td></tr>
+                                    <tr><td class="py-1 pl-4">Login</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1 pl-4">Forgot Password</td><td class="text-right">1h</td><td class="text-right">$15</td></tr>
+                                    <tr><td class="py-1 pl-4">Onboarding (3 slides)</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1 pl-4">Home Dashboard</td><td class="text-right">3h</td><td class="text-right">$45</td></tr>
+                                    <tr><td class="py-1 pl-4">Settings</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1 pl-4">Profile</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1 pl-4">Notifications</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1 pl-4">Error States (set)</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1 pl-4">Loading/Empty States</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                </tbody>
+                                <tfoot><tr class="font-medium border-t border-gray-100"><td class="pt-2">Total (30 screens)</td><td class="pt-2 text-right">64h</td><td class="pt-2 text-right">$960</td></tr></tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Landing Page -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button onclick="toggleAccordion('landing')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-medium text-gray-900">Landing Page</p>
+                                <p class="text-sm text-gray-500">7 sections, mobile + desktop</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="font-semibold text-gray-900">$158</p>
+                                <p class="text-xs text-gray-500">10.5h</p>
+                            </div>
+                            <svg id="landing-icon" class="accordion-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </button>
+                    <div id="landing-content" class="accordion-content">
+                        <div class="p-4 border-t border-gray-100 bg-white">
+                            <table class="w-full text-sm">
+                                <thead><tr class="text-gray-500 text-left"><th class="pb-2">Section</th><th class="pb-2 text-right">Hours</th><th class="pb-2 text-right">Price</th></tr></thead>
+                                <tbody class="text-gray-700">
+                                    <tr><td class="py-1">Hero Section</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1">Problem/Features</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1">How it Works</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1">Social Proof</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1">Pricing Section</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1">FAQ + Footer</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                    <tr><td class="py-1">Mobile Responsive</td><td class="text-right">1.5h</td><td class="text-right">$23</td></tr>
+                                </tbody>
+                                <tfoot><tr class="font-medium border-t border-gray-100"><td class="pt-2">Total</td><td class="pt-2 text-right">10.5h</td><td class="pt-2 text-right">$158</td></tr></tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prototype -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button onclick="toggleAccordion('prototype')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-medium text-gray-900">Interactive Prototype</p>
+                                <p class="text-sm text-gray-500">4 core workflow demos</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="font-semibold text-gray-900">$120</p>
+                                <p class="text-xs text-gray-500">8h</p>
+                            </div>
+                            <svg id="prototype-icon" class="accordion-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </button>
+                    <div id="prototype-content" class="accordion-content">
+                        <div class="p-4 border-t border-gray-100 bg-white">
+                            <table class="w-full text-sm">
+                                <thead><tr class="text-gray-500 text-left"><th class="pb-2">Workflow</th><th class="pb-2 text-right">Hours</th><th class="pb-2 text-right">Price</th></tr></thead>
+                                <tbody class="text-gray-700">
+                                    <tr><td class="py-1">Service Request Intake prototype</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1">Task Creation & Assignment prototype</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1">Status Tracking prototype</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1">Team Management prototype</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                </tbody>
+                                <tfoot><tr class="font-medium border-t border-gray-100"><td class="pt-2">Total</td><td class="pt-2 text-right">8h</td><td class="pt-2 text-right">$120</td></tr></tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Handoff -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button onclick="toggleAccordion('handoff')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-medium text-gray-900">Developer Handoff</p>
+                                <p class="text-sm text-gray-500">Specs & documentation</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="font-semibold text-gray-900">$120</p>
+                                <p class="text-xs text-gray-500">8h</p>
+                            </div>
+                            <svg id="handoff-icon" class="accordion-icon w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </button>
+                    <div id="handoff-content" class="accordion-content">
+                        <div class="p-4 border-t border-gray-100 bg-white">
+                            <table class="w-full text-sm">
+                                <thead><tr class="text-gray-500 text-left"><th class="pb-2">Deliverable</th><th class="pb-2 text-right">Hours</th><th class="pb-2 text-right">Price</th></tr></thead>
+                                <tbody class="text-gray-700">
+                                    <tr><td class="py-1">Interaction specifications</td><td class="text-right">3h</td><td class="text-right">$45</td></tr>
+                                    <tr><td class="py-1">Component documentation</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1">Asset export & organization</td><td class="text-right">2h</td><td class="text-right">$30</td></tr>
+                                    <tr><td class="py-1">Developer walkthrough</td><td class="text-right">1h</td><td class="text-right">$15</td></tr>
+                                </tbody>
+                                <tfoot><tr class="font-medium border-t border-gray-100"><td class="pt-2">Total</td><td class="pt-2 text-right">8h</td><td class="pt-2 text-right">$120</td></tr></tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="landing-container">
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="landing" value="hero" data-hours="1.5" data-price="23" checked class="w-5 h-5 text-blue-600 rounded">
-                        <p class="font-medium text-gray-900">Hero Section</p>
-                    </div>
-                    <p class="font-semibold text-gray-900">$23</p>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="landing" value="features" data-hours="1.5" data-price="23" checked class="w-5 h-5 text-blue-600 rounded">
-                        <p class="font-medium text-gray-900">Problem/Features</p>
-                    </div>
-                    <p class="font-semibold text-gray-900">$23</p>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="landing" value="how-it-works" data-hours="1.5" data-price="23" checked class="w-5 h-5 text-blue-600 rounded">
-                        <p class="font-medium text-gray-900">How it Works</p>
-                    </div>
-                    <p class="font-semibold text-gray-900">$23</p>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="landing" value="social-proof" data-hours="1.5" data-price="23" checked class="w-5 h-5 text-blue-600 rounded">
-                        <p class="font-medium text-gray-900">Social Proof</p>
-                    </div>
-                    <p class="font-semibold text-gray-900">$23</p>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="landing" value="pricing" data-hours="1.5" data-price="23" checked class="w-5 h-5 text-blue-600 rounded">
-                        <p class="font-medium text-gray-900">Pricing Section</p>
-                    </div>
-                    <p class="font-semibold text-gray-900">$23</p>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="landing" value="faq-footer" data-hours="1.5" data-price="23" checked class="w-5 h-5 text-blue-600 rounded">
-                        <p class="font-medium text-gray-900">FAQ + Footer</p>
-                    </div>
-                    <p class="font-semibold text-gray-900">$23</p>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition sm:col-span-2">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="landing" value="mobile-responsive" data-hours="1.5" data-price="23" checked class="w-5 h-5 text-blue-600 rounded">
-                        <p class="font-medium text-gray-900">Mobile Responsive</p>
-                    </div>
-                    <p class="font-semibold text-gray-900">$23</p>
-                </label>
+            <!-- Base Total -->
+            <div class="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
+                <p class="font-medium text-gray-700">Design Outputs Subtotal</p>
+                <div class="text-right">
+                    <p class="text-xl font-bold text-gray-900">$1,793</p>
+                    <p class="text-sm text-gray-500">119.5h</p>
+                </div>
             </div>
         </section>
 
         <!-- UI Kit Selection -->
         <section class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-2">UI Kit License</h2>
-            <p class="text-sm text-gray-500 mb-4">Choose a design system foundation (one-time cost)</p>
+            <p class="text-sm text-gray-500 mb-4">Choose a design system foundation (one-time cost, includes dark mode)</p>
 
             <div class="space-y-3" id="uikit-container">
                 <label class="radio-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
@@ -268,12 +410,46 @@
             </div>
         </section>
 
+        <!-- Optional Add-ons -->
+        <section class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900">Optional Add-ons</h2>
+                    <p class="text-sm text-gray-500">Enhance your project scope</p>
+                </div>
+            </div>
+
+            <div class="space-y-3" id="addons-container">
+                <label class="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" name="addon" value="desktop" data-hours="50" data-price="750" class="w-5 h-5 text-blue-600 rounded">
+                        <div>
+                            <p class="font-medium text-gray-900">Desktop/Tablet Design</p>
+                            <p class="text-sm text-gray-500">Responsive layouts for larger screens</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-semibold text-gray-900">$750</p>
+                        <p class="text-xs text-gray-500">~50h</p>
+                    </div>
+                </label>
+            </div>
+        </section>
+
         <!-- Additional Screens -->
         <section class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-2">Additional Screens</h2>
-            <p class="text-sm text-gray-500 mb-4">Beyond the base 30 screens (+2h / $30 each)</p>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                <div class="flex gap-3">
+                    <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="text-sm text-amber-800">
+                        <p class="font-medium mb-1">Beyond the 30 main app screens</p>
+                        <p>Use this section for edge cases, special requests, or additional screens that are not part of the core 4 workflows. Each additional screen is billed at <strong>$30 (2 hours)</strong>.</p>
+                    </div>
+                </div>
+            </div>
 
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-4">
                     <button onclick="updateScreens(-1)" class="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition text-xl font-medium">−</button>
                     <div class="text-center min-w-[60px]">
@@ -287,101 +463,10 @@
                     <p class="text-xs text-gray-500"><span id="screen-hours">0</span>h</p>
                 </div>
             </div>
-        </section>
 
-        <!-- Optional Add-ons -->
-        <section class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-900">Optional Add-ons</h2>
-                    <p class="text-sm text-gray-500">Enhance your project</p>
-                </div>
-            </div>
-
-            <div class="space-y-3" id="addons-container">
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="addon" value="desktop" data-hours="50" data-price="750" class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Desktop/Tablet Design</p>
-                            <p class="text-sm text-gray-500">Responsive layouts for larger screens</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$750</p>
-                        <p class="text-xs text-gray-500">~50h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="addon" value="dark-mode" data-hours="38" data-price="570" class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Dark Mode Variants</p>
-                            <p class="text-sm text-gray-500">Complete dark theme for all screens</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$570</p>
-                        <p class="text-xs text-gray-500">~38h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="addon" value="illustrations" data-hours="20" data-price="300" class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Custom Illustrations</p>
-                            <p class="text-sm text-gray-500">Branded visual assets</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$300</p>
-                        <p class="text-xs text-gray-500">~20h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="addon" value="motion" data-hours="12" data-price="180" class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">Motion Design</p>
-                            <p class="text-sm text-gray-500">Lottie animations & micro-interactions</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$180</p>
-                        <p class="text-xs text-gray-500">~12h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="addon" value="copywriting" data-hours="18" data-price="270" class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">UX Copywriting</p>
-                            <p class="text-sm text-gray-500">Microcopy, buttons, error messages</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$270</p>
-                        <p class="text-xs text-gray-500">~18h</p>
-                    </div>
-                </label>
-
-                <label class="checkbox-item flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" name="addon" value="research" data-hours="25" data-price="375" class="w-5 h-5 text-blue-600 rounded">
-                        <div>
-                            <p class="font-medium text-gray-900">User Research & Testing</p>
-                            <p class="text-sm text-gray-500">Interviews, usability testing</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900">$375</p>
-                        <p class="text-xs text-gray-500">~25h</p>
-                    </div>
-                </label>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Comments / Screen Descriptions</label>
+                <textarea id="screen-comments" rows="3" placeholder="Describe the additional screens you need (e.g., 'Admin analytics dashboard', 'Bulk import screen', 'Advanced filter modal'...)" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"></textarea>
             </div>
         </section>
 
@@ -391,19 +476,14 @@
                 <div>
                     <p class="text-sm text-gray-500">Total Estimate</p>
                     <div class="flex items-baseline gap-2">
-                        <p class="text-3xl font-bold text-gray-900">$<span id="total-price">1,954</span></p>
+                        <p class="text-3xl font-bold text-gray-900">$<span id="total-price">1,865</span></p>
                         <p class="text-sm text-gray-500">(<span id="total-hours">119.5</span>h)</p>
                     </div>
                 </div>
-                <div class="flex gap-3">
-                    <button onclick="downloadCSV()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        CSV
-                    </button>
-                    <button onclick="showSubmitModal()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
-                        Submit Quote
-                    </button>
-                </div>
+                <button onclick="showSubmitModal()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Approve and Download CSV
+                </button>
             </div>
         </div>
 
@@ -442,7 +522,7 @@
                 <li>Client provides all copy/content. Placeholder text used until provided.</li>
                 <li>5-6 week timeline assumes 48-hour max feedback turnaround.</li>
                 <li>3 revision rounds included. Additional revisions billed hourly.</li>
-                <li>Mobile app design only. Desktop/tablet quoted separately.</li>
+                <li>Mobile app design only. Desktop/tablet quoted separately as add-on.</li>
             </ul>
         </section>
     </main>
@@ -450,15 +530,15 @@
     <!-- Submit Modal -->
     <div id="submit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl max-w-md w-full p-6">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">Submit Quote Request</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Approve Quote</h2>
             <form id="quote-form" onsubmit="submitQuote(event)">
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
                         <input type="text" name="client_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Your Email *</label>
                         <input type="email" name="client_email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
@@ -476,7 +556,7 @@
                 </div>
                 <div class="flex gap-3 mt-6">
                     <button type="button" onclick="hideSubmitModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">Cancel</button>
-                    <button type="submit" id="submit-btn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">Submit</button>
+                    <button type="submit" id="submit-btn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">Approve & Download</button>
                 </div>
             </form>
         </div>
@@ -488,8 +568,8 @@
             <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
-            <h2 class="text-xl font-bold text-gray-900 mb-2">Quote Submitted!</h2>
-            <p class="text-gray-600 mb-6">Thank you! Your quote request has been sent. I'll review and get back to you within 24-48 hours.</p>
+            <h2 class="text-xl font-bold text-gray-900 mb-2">Quote Approved!</h2>
+            <p class="text-gray-600 mb-6">Thank you! Your quote approval has been sent and CSV downloaded. I'll be in touch within 24-48 hours to discuss next steps.</p>
             <button onclick="hideSuccessModal()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">Close</button>
         </div>
     </div>
@@ -501,27 +581,22 @@
         const SCREEN_HOURS = 2;
         const SCREEN_PRICE = 30;
 
-        // Initialize EmailJS
-        (function() {
-            emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
-        })();
+        // Base prices (fixed)
+        const BASE_HOURS = 119.5;
+        const BASE_PRICE = 1793;
+
+        // Accordion toggle
+        function toggleAccordion(id) {
+            const content = document.getElementById(id + '-content');
+            const icon = document.getElementById(id + '-icon');
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
 
         // Calculate total price
         function calculateTotal() {
-            let totalPrice = 0;
-            let totalHours = 0;
-
-            // Design Phases
-            document.querySelectorAll('input[name="phase"]:checked').forEach(input => {
-                totalPrice += parseFloat(input.dataset.price);
-                totalHours += parseFloat(input.dataset.hours);
-            });
-
-            // Landing Page Sections
-            document.querySelectorAll('input[name="landing"]:checked').forEach(input => {
-                totalPrice += parseFloat(input.dataset.price);
-                totalHours += parseFloat(input.dataset.hours);
-            });
+            let totalPrice = BASE_PRICE;
+            let totalHours = BASE_HOURS;
 
             // UI Kit
             const uikit = document.querySelector('input[name="uikit"]:checked');
@@ -553,62 +628,60 @@
             calculateTotal();
         }
 
-        // Toggle all phases
-        function toggleAllPhases() {
-            const checkboxes = document.querySelectorAll('input[name="phase"]');
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            checkboxes.forEach(cb => cb.checked = !allChecked);
-            calculateTotal();
-        }
-
-        // Toggle all landing sections
-        function toggleAllLanding() {
-            const checkboxes = document.querySelectorAll('input[name="landing"]');
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            checkboxes.forEach(cb => cb.checked = !allChecked);
-            calculateTotal();
-        }
-
         // Download CSV
         function downloadCSV() {
             const rows = [['Item', 'Hours', 'Price']];
 
-            // Design Phases
-            document.querySelectorAll('input[name="phase"]:checked').forEach(input => {
-                const label = input.closest('label').querySelector('.font-medium').textContent;
-                rows.push([label, input.dataset.hours, '$' + input.dataset.price]);
-            });
-
-            // Landing Sections
-            document.querySelectorAll('input[name="landing"]:checked').forEach(input => {
-                const label = input.closest('label').querySelector('.font-medium').textContent;
-                rows.push([label, input.dataset.hours, '$' + input.dataset.price]);
-            });
+            // Design Outputs (fixed)
+            rows.push(['=== DESIGN OUTPUTS (Base Package) ===', '', '']);
+            rows.push(['Discovery', '10', '$150']);
+            rows.push(['Wireframes', '16', '$240']);
+            rows.push(['Design System', '3', '$45']);
+            rows.push(['Hi-Fi App Screens (30)', '64', '$960']);
+            rows.push(['Landing Page (7 sections)', '10.5', '$158']);
+            rows.push(['Interactive Prototype', '8', '$120']);
+            rows.push(['Developer Handoff', '8', '$120']);
+            rows.push(['Subtotal', '119.5', '$1,793']);
 
             // UI Kit
             const uikit = document.querySelector('input[name="uikit"]:checked');
             if (uikit) {
                 const label = uikit.closest('label').querySelector('.font-medium').textContent;
-                rows.push([label + ' License', '-', '$' + uikit.dataset.price]);
+                rows.push(['', '', '']);
+                rows.push(['=== UI KIT LICENSE ===', '', '']);
+                rows.push([label, '-', '$' + uikit.dataset.price]);
             }
 
             // Additional Screens
             if (additionalScreens > 0) {
-                rows.push(['Additional Screens (' + additionalScreens + ')', additionalScreens * SCREEN_HOURS, '$' + (additionalScreens * SCREEN_PRICE)]);
+                const comments = document.getElementById('screen-comments').value.trim();
+                rows.push(['', '', '']);
+                rows.push(['=== ADDITIONAL SCREENS ===', '', '']);
+                rows.push([additionalScreens + ' additional screens', additionalScreens * SCREEN_HOURS + 'h', '$' + (additionalScreens * SCREEN_PRICE)]);
+                if (comments) {
+                    rows.push(['Comments: ' + comments, '', '']);
+                }
             }
 
             // Add-ons
-            document.querySelectorAll('input[name="addon"]:checked').forEach(input => {
-                const label = input.closest('label').querySelector('.font-medium').textContent;
-                rows.push([label, input.dataset.hours, '$' + input.dataset.price]);
-            });
+            const addons = document.querySelectorAll('input[name="addon"]:checked');
+            if (addons.length > 0) {
+                rows.push(['', '', '']);
+                rows.push(['=== OPTIONAL ADD-ONS ===', '', '']);
+                addons.forEach(input => {
+                    const label = input.closest('label').querySelector('.font-medium').textContent;
+                    rows.push([label, input.dataset.hours + 'h', '$' + input.dataset.price]);
+                });
+            }
 
             // Total
             rows.push(['', '', '']);
-            rows.push(['TOTAL', document.getElementById('total-hours').textContent + 'h', '$' + document.getElementById('total-price').textContent]);
+            rows.push(['=== TOTAL ===', '', '']);
+            rows.push(['Total Hours', document.getElementById('total-hours').textContent + 'h', '']);
+            rows.push(['Total Price', '', '$' + document.getElementById('total-price').textContent]);
 
             // Generate CSV
-            const csv = rows.map(row => row.map(cell => '"' + cell + '"').join(',')).join('\n');
+            const csv = rows.map(row => row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(',')).join('\n');
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -643,31 +716,33 @@
         function buildQuoteSummary() {
             let summary = [];
 
-            summary.push('=== DESIGN PHASES ===');
-            document.querySelectorAll('input[name="phase"]:checked').forEach(input => {
-                const label = input.closest('label').querySelector('.font-medium').textContent;
-                summary.push(`${label}: ${input.dataset.hours}h - $${input.dataset.price}`);
-            });
-
-            summary.push('\n=== LANDING PAGE SECTIONS ===');
-            document.querySelectorAll('input[name="landing"]:checked').forEach(input => {
-                const label = input.closest('label').querySelector('.font-medium').textContent;
-                summary.push(`${label}: ${input.dataset.hours}h - $${input.dataset.price}`);
-            });
+            summary.push('=== DESIGN OUTPUTS (Base Package) ===');
+            summary.push('Discovery: 10h - $150');
+            summary.push('Wireframes: 16h - $240');
+            summary.push('Design System: 3h - $45');
+            summary.push('Hi-Fi App Screens (30): 64h - $960');
+            summary.push('Landing Page (7 sections): 10.5h - $158');
+            summary.push('Interactive Prototype: 8h - $120');
+            summary.push('Developer Handoff: 8h - $120');
+            summary.push('Subtotal: 119.5h - $1,793');
 
             const uikit = document.querySelector('input[name="uikit"]:checked');
             if (uikit) {
                 const label = uikit.closest('label').querySelector('.font-medium').textContent;
-                summary.push(`\n=== UI KIT ===\n${label}: $${uikit.dataset.price}`);
+                summary.push(`\n=== UI KIT LICENSE ===\n${label}: $${uikit.dataset.price}`);
             }
 
             if (additionalScreens > 0) {
+                const comments = document.getElementById('screen-comments').value.trim();
                 summary.push(`\n=== ADDITIONAL SCREENS ===\n${additionalScreens} screens: ${additionalScreens * SCREEN_HOURS}h - $${additionalScreens * SCREEN_PRICE}`);
+                if (comments) {
+                    summary.push(`Comments: ${comments}`);
+                }
             }
 
             const addons = document.querySelectorAll('input[name="addon"]:checked');
             if (addons.length > 0) {
-                summary.push('\n=== ADD-ONS ===');
+                summary.push('\n=== OPTIONAL ADD-ONS ===');
                 addons.forEach(input => {
                     const label = input.closest('label').querySelector('.font-medium').textContent;
                     summary.push(`${label}: ${input.dataset.hours}h - $${input.dataset.price}`);
@@ -685,14 +760,15 @@
             const form = event.target;
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
+            submitBtn.textContent = 'Processing...';
 
             const formData = new FormData(form);
             const quoteSummary = buildQuoteSummary();
+            const screenComments = document.getElementById('screen-comments').value.trim();
 
             // Build email content
             const emailBody = `
-New Quote Request from X Project Quote Tool
+QUOTE APPROVED - X Project
 
 CLIENT INFORMATION
 ==================
@@ -700,42 +776,32 @@ Name: ${formData.get('client_name')}
 Email: ${formData.get('client_email')}
 Company: ${formData.get('company') || 'Not provided'}
 
-NOTES
-=====
+CLIENT NOTES
+============
 ${formData.get('notes') || 'None'}
 
+${screenComments ? `ADDITIONAL SCREEN COMMENTS\n==========================\n${screenComments}\n` : ''}
 QUOTE DETAILS
 =============
 ${quoteSummary}
 
 ---
-Submitted via X Project Quote Tool
+Quote approved via X Project Quote Tool
             `.trim();
 
-            // Try using EmailJS (if configured) or fallback to mailto
-            try {
-                // Option 1: EmailJS (requires setup)
-                // await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
-                //     to_email: 'thanh.quoc731@gmail.com',
-                //     from_name: formData.get('client_name'),
-                //     from_email: formData.get('client_email'),
-                //     message: emailBody
-                // });
+            // Download CSV first
+            downloadCSV();
 
-                // Option 2: Mailto fallback
-                const mailtoLink = `mailto:thanh.quoc731@gmail.com?subject=${encodeURIComponent('X Project Quote Request - ' + formData.get('client_name'))}&body=${encodeURIComponent(emailBody)}`;
-                window.location.href = mailtoLink;
+            // Send email via mailto
+            const mailtoLink = `mailto:thanh.quoc731@gmail.com?subject=${encodeURIComponent('QUOTE APPROVED - X Project - ' + formData.get('client_name'))}&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = mailtoLink;
 
-                hideSubmitModal();
-                showSuccessModal();
-                form.reset();
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error sending quote. Please try again or email directly to thanh.quoc731@gmail.com');
-            }
+            hideSubmitModal();
+            showSuccessModal();
+            form.reset();
 
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit';
+            submitBtn.textContent = 'Approve & Download';
         }
 
         // Event listeners
