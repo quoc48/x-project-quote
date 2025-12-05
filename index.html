@@ -526,7 +526,7 @@
                 <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
             <h2 class="text-xl font-bold text-gray-900 mb-2">Quote Approved!</h2>
-            <p class="text-gray-600 mb-6">Thank you! Your quote approval has been sent and CSV downloaded. I'll be in touch within 24-48 hours to discuss next steps.</p>
+            <p class="text-gray-600 mb-6">Thank you! Your CSV has been downloaded. Please click <strong>Send</strong> in your email app to submit your approval. I'll be in touch within 24-48 hours.</p>
             <button onclick="hideSuccessModal()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">Close</button>
         </div>
     </div>
@@ -851,40 +851,9 @@ ${quoteSummary}
 ---
 Sent from X Project Quote Tool`;
 
-            // Try to send email via FormSubmit (with timeout)
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-            try {
-                const response = await fetch('https://formsubmit.co/ajax/thanh.quoc731@gmail.com', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        _subject: emailSubject,
-                        _template: 'table',
-                        'Client Name': clientName,
-                        'Client Notes': clientNotes || 'None',
-                        'Screen Comments': screenComments || 'None',
-                        'Total Hours': document.getElementById('total-hours').textContent + 'h',
-                        'Total Price': '$' + document.getElementById('total-price').textContent,
-                        'Quote Summary': quoteSummary,
-                        'Submitted At': new Date().toLocaleString()
-                    }),
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-
-                if (!response.ok) throw new Error('Failed');
-            } catch (error) {
-                clearTimeout(timeoutId);
-                console.log('FormSubmit failed, opening mailto fallback');
-                // Fallback to mailto
-                const mailtoLink = `mailto:thanh.quoc731@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-                window.open(mailtoLink, '_blank');
-            }
+            // Open email client with pre-filled quote approval
+            const mailtoLink = `mailto:thanh.quoc731@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = mailtoLink;
 
             // Always show success (CSV was downloaded)
             hideSubmitModal();
