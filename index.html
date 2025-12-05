@@ -445,9 +445,9 @@
                         <p class="text-sm text-gray-500">(<span id="total-hours">119.5</span>h)</p>
                     </div>
                 </div>
-                <button onclick="showSubmitModal()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Approve and Download CSV
+                <button onclick="downloadQuote()" id="download-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Download Quote (CSV)
                 </button>
             </div>
         </div>
@@ -492,44 +492,6 @@
         </section>
     </main>
 
-    <!-- Submit Modal -->
-    <div id="submit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl max-w-md w-full p-6">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">Approve Quote</h2>
-            <form id="quote-form" onsubmit="submitQuote(event)">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
-                        <input type="text" name="client_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
-                        <textarea name="notes" rows="3" placeholder="Any additional comments or questions..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
-                    </div>
-                    <label class="flex items-start gap-3">
-                        <input type="checkbox" name="terms" required class="mt-1 w-4 h-4 text-blue-600 rounded">
-                        <span class="text-sm text-gray-600">I agree to the terms and conditions outlined above</span>
-                    </label>
-                </div>
-                <div class="flex gap-3 mt-6">
-                    <button type="button" onclick="hideSubmitModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">Cancel</button>
-                    <button type="submit" id="submit-btn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">Approve & Download</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Success Modal -->
-    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl max-w-md w-full p-6 text-center">
-            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            </div>
-            <h2 class="text-xl font-bold text-gray-900 mb-2">Quote Approved!</h2>
-            <p class="text-gray-600 mb-6">Thank you! Your CSV has been downloaded. Please click <strong>Send</strong> in your email app to submit your approval. I'll be in touch within 24-48 hours.</p>
-            <button onclick="hideSuccessModal()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">Close</button>
-        </div>
-    </div>
 
     <script>
         // State
@@ -586,14 +548,13 @@
         }
 
         // Download CSV with full breakdown
-        function downloadCSV(clientName, clientNotes) {
+        function downloadCSV() {
             const rows = [];
             const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
             // Header
             rows.push(['X PROJECT - UI/UX DESIGN QUOTE']);
             rows.push(['Date:', today]);
-            rows.push(['Client:', clientName || 'N/A']);
             rows.push(['Rate:', '$15/hour']);
             rows.push(['']);
 
@@ -727,13 +688,6 @@
             rows.push(['Total Price', '', '$' + document.getElementById('total-price').textContent]);
             rows.push(['']);
 
-            // Client Notes
-            if (clientNotes) {
-                rows.push(['=== CLIENT NOTES ===', '', '']);
-                rows.push([clientNotes, '', '']);
-                rows.push(['']);
-            }
-
             // Terms
             rows.push(['=== TERMS ===', '', '']);
             rows.push(['- Quote covers up to 30 unique screens', '', '']);
@@ -752,116 +706,25 @@
             URL.revokeObjectURL(url);
         }
 
-        // Modal functions
-        function showSubmitModal() {
-            document.getElementById('submit-modal').classList.remove('hidden');
-            document.getElementById('submit-modal').classList.add('flex');
-        }
+        // Download quote with button feedback
+        function downloadQuote() {
+            const btn = document.getElementById('download-btn');
+            const originalText = btn.innerHTML;
 
-        function hideSubmitModal() {
-            document.getElementById('submit-modal').classList.add('hidden');
-            document.getElementById('submit-modal').classList.remove('flex');
-        }
+            // Download CSV
+            downloadCSV();
 
-        function showSuccessModal() {
-            document.getElementById('success-modal').classList.remove('hidden');
-            document.getElementById('success-modal').classList.add('flex');
-        }
+            // Show feedback
+            btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Downloaded!';
+            btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            btn.classList.add('bg-green-600');
 
-        function hideSuccessModal() {
-            document.getElementById('success-modal').classList.add('hidden');
-            document.getElementById('success-modal').classList.remove('flex');
-        }
-
-        // Build quote summary for email
-        function buildQuoteSummary() {
-            let summary = [];
-
-            summary.push('DESIGN TASKS (Base Package):');
-            summary.push('- Discovery: 10h - $150');
-            summary.push('- Wireframes: 16h - $240');
-            summary.push('- Design System: 3h - $45');
-            summary.push('- Hi-Fi App Screens (30): 64h - $960');
-            summary.push('- Product Page: 10h - $150');
-            summary.push('- Interactive Prototype: 8h - $120');
-            summary.push('- Developer Handoff: 4h - $60');
-            summary.push('Subtotal: 115h - $1,725');
-
-            const uikit = document.querySelector('input[name="uikit"]:checked');
-            if (uikit) {
-                const label = uikit.closest('label').querySelector('.font-medium').textContent.split('↗')[0].trim();
-                summary.push(`\nUI KIT LICENSE:\n${label}: $${uikit.dataset.price}`);
-            }
-
-            if (additionalScreens > 0) {
-                const comments = document.getElementById('screen-comments').value.trim();
-                summary.push(`\nADDITIONAL SCREENS:\n${additionalScreens} screens: ${additionalScreens * SCREEN_HOURS}h - $${additionalScreens * SCREEN_PRICE}`);
-                if (comments) {
-                    summary.push(`Description: ${comments}`);
-                }
-            }
-
-            const addons = document.querySelectorAll('input[name="addon"]:checked');
-            if (addons.length > 0) {
-                summary.push('\nOPTIONAL ADD-ONS:');
-                addons.forEach(input => {
-                    const label = input.closest('label').querySelector('.font-medium').textContent;
-                    summary.push(`- ${label}: ${input.dataset.hours}h - $${input.dataset.price}`);
-                });
-            }
-
-            summary.push(`\nGRAND TOTAL:\nHours: ${document.getElementById('total-hours').textContent}h\nPrice: $${document.getElementById('total-price').textContent}`);
-
-            return summary.join('\n');
-        }
-
-        // Submit quote
-        async function submitQuote(event) {
-            event.preventDefault();
-            const form = event.target;
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Processing...';
-
-            const formData = new FormData(form);
-            const clientName = formData.get('client_name');
-            const clientNotes = formData.get('notes') || '';
-            const quoteSummary = buildQuoteSummary();
-            const screenComments = document.getElementById('screen-comments').value.trim();
-
-            // Download CSV first
-            downloadCSV(clientName, clientNotes);
-
-            // Build email content
-            const emailSubject = 'QUOTE APPROVED - X Project - ' + clientName;
-            const emailBody = `QUOTE APPROVED - X Project
-
-Client Name: ${clientName}
-Submitted: ${new Date().toLocaleString()}
-
-CLIENT NOTES:
-${clientNotes || 'None'}
-
-ADDITIONAL SCREEN COMMENTS:
-${screenComments || 'None'}
-
-QUOTE SUMMARY:
-${quoteSummary}
-
----
-Sent from X Project Quote Tool`;
-
-            // Open email client with pre-filled quote approval
-            const mailtoLink = `mailto:thanh.quoc731@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-            window.location.href = mailtoLink;
-
-            // Always show success (CSV was downloaded)
-            hideSubmitModal();
-            showSuccessModal();
-            form.reset();
-
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Approve & Download';
+            // Reset after 2 seconds
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('bg-green-600');
+                btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            }, 2000);
         }
 
         // Event listeners
