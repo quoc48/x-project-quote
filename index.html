@@ -821,7 +821,7 @@
             const form = event.target;
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
+            submitBtn.textContent = 'Processing...';
 
             const formData = new FormData(form);
             const clientName = formData.get('client_name');
@@ -829,46 +829,67 @@
             const quoteSummary = buildQuoteSummary();
             const screenComments = document.getElementById('screen-comments').value.trim();
 
-            // Build email data for FormSubmit
-            const emailData = {
-                _subject: 'QUOTE APPROVED - X Project - ' + clientName,
-                _template: 'table',
-                client_name: clientName,
-                client_notes: clientNotes || 'None',
-                additional_screen_comments: screenComments || 'None',
-                quote_summary: quoteSummary,
-                total_hours: document.getElementById('total-hours').textContent + 'h',
-                total_price: '$' + document.getElementById('total-price').textContent,
-                submitted_at: new Date().toLocaleString()
-            };
+            // Download CSV first
+            downloadCSV(clientName, clientNotes);
+
+            // Build email content
+            const emailSubject = 'QUOTE APPROVED - X Project - ' + clientName;
+            const emailBody = `QUOTE APPROVED - X Project
+
+Client Name: ${clientName}
+Submitted: ${new Date().toLocaleString()}
+
+CLIENT NOTES:
+${clientNotes || 'None'}
+
+ADDITIONAL SCREEN COMMENTS:
+${screenComments || 'None'}
+
+QUOTE SUMMARY:
+${quoteSummary}
+
+---
+Sent from X Project Quote Tool`;
+
+            // Try to send email via FormSubmit (with timeout)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
 
             try {
-                // Send email via FormSubmit.co (free service, no signup)
                 const response = await fetch('https://formsubmit.co/ajax/thanh.quoc731@gmail.com', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify(emailData)
+                    body: JSON.stringify({
+                        _subject: emailSubject,
+                        _template: 'table',
+                        'Client Name': clientName,
+                        'Client Notes': clientNotes || 'None',
+                        'Screen Comments': screenComments || 'None',
+                        'Total Hours': document.getElementById('total-hours').textContent + 'h',
+                        'Total Price': '$' + document.getElementById('total-price').textContent,
+                        'Quote Summary': quoteSummary,
+                        'Submitted At': new Date().toLocaleString()
+                    }),
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
 
-                if (response.ok) {
-                    // Download CSV after successful email
-                    downloadCSV(clientName, clientNotes);
-                    hideSubmitModal();
-                    showSuccessModal();
-                    form.reset();
-                } else {
-                    throw new Error('Email failed');
-                }
+                if (!response.ok) throw new Error('Failed');
             } catch (error) {
-                console.error('Error:', error);
-                // Still download CSV even if email fails
-                downloadCSV(clientName, clientNotes);
-                hideSubmitModal();
-                alert('CSV downloaded! Email notification may have failed - please also send a copy to thanh.quoc731@gmail.com');
+                clearTimeout(timeoutId);
+                console.log('FormSubmit failed, opening mailto fallback');
+                // Fallback to mailto
+                const mailtoLink = `mailto:thanh.quoc731@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+                window.open(mailtoLink, '_blank');
             }
+
+            // Always show success (CSV was downloaded)
+            hideSubmitModal();
+            showSuccessModal();
+            form.reset();
 
             submitBtn.disabled = false;
             submitBtn.textContent = 'Approve & Download';
