@@ -503,16 +503,8 @@
                         <input type="text" name="client_name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Your Email *</label>
-                        <input type="email" name="client_email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                        <input type="text" name="company" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
-                        <textarea name="notes" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
+                        <textarea name="notes" rows="3" placeholder="Any additional comments or questions..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
                     </div>
                     <label class="flex items-start gap-3">
                         <input type="checkbox" name="terms" required class="mt-1 w-4 h-4 text-blue-600 rounded">
@@ -593,57 +585,161 @@
             calculateTotal();
         }
 
-        // Download CSV
-        function downloadCSV() {
-            const rows = [['Item', 'Hours', 'Price']];
+        // Download CSV with full breakdown
+        function downloadCSV(clientName, clientNotes) {
+            const rows = [];
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-            // Design Outputs (fixed)
-            rows.push(['=== DESIGN OUTPUTS (Base Package) ===', '', '']);
-            rows.push(['Discovery', '10', '$150']);
-            rows.push(['Wireframes', '16', '$240']);
-            rows.push(['Design System', '3', '$45']);
-            rows.push(['Hi-Fi App Screens (30)', '64', '$960']);
-            rows.push(['Product Page', '10', '$150']);
-            rows.push(['Interactive Prototype', '8', '$120']);
-            rows.push(['Developer Handoff', '4', '$60']);
-            rows.push(['Subtotal', '115', '$1,725']);
+            // Header
+            rows.push(['X PROJECT - UI/UX DESIGN QUOTE']);
+            rows.push(['Date:', today]);
+            rows.push(['Client:', clientName || 'N/A']);
+            rows.push(['Rate:', '$15/hour']);
+            rows.push(['']);
+
+            // Design Tasks
+            rows.push(['=== DESIGN TASKS (Base Package) ===', 'Hours', 'Price']);
+            rows.push(['']);
+
+            // Discovery breakdown
+            rows.push(['DISCOVERY', '10h', '$150']);
+            rows.push(['  - Industry standard flows research', '4h', '$60']);
+            rows.push(['  - User journey mapping', '3h', '$45']);
+            rows.push(['  - Requirements documentation', '3h', '$45']);
+            rows.push(['']);
+
+            // Wireframes breakdown
+            rows.push(['WIREFRAMES', '16h', '$240']);
+            rows.push(['  - Service Request Intake flow', '4h', '$60']);
+            rows.push(['  - Task Creation & Assignment flow', '4h', '$60']);
+            rows.push(['  - Status Tracking & Workflow flow', '4h', '$60']);
+            rows.push(['  - Team Management flow', '4h', '$60']);
+            rows.push(['']);
+
+            // Design System
+            rows.push(['DESIGN SYSTEM', '3h', '$45']);
+            rows.push(['  - Color & typography tokens', '1h', '$15']);
+            rows.push(['  - Component library setup', '1.5h', '$23']);
+            rows.push(['  - Spacing & grid system', '0.5h', '$7']);
+            rows.push(['']);
+
+            // Hi-Fi Screens
+            rows.push(['HI-FI APP SCREENS (30 screens)', '64h', '$960']);
+            rows.push(['  Request Intake (6 screens)', '', '']);
+            rows.push(['    - Request List/Inbox', '2.5h', '$38']);
+            rows.push(['    - Create Request Form', '2.5h', '$38']);
+            rows.push(['    - Request Detail View', '3h', '$45']);
+            rows.push(['    - Customer Self-Service Form', '2h', '$30']);
+            rows.push(['    - Customer Status View', '1.5h', '$23']);
+            rows.push(['    - Quick Actions Modal', '1.5h', '$23']);
+            rows.push(['  Task Management (5 screens)', '', '']);
+            rows.push(['    - Task List View', '2.5h', '$38']);
+            rows.push(['    - Create Task', '2.5h', '$38']);
+            rows.push(['    - Task Detail View', '3h', '$45']);
+            rows.push(['    - Assignment Interface', '2.5h', '$38']);
+            rows.push(['    - Task Complete Flow', '1.5h', '$23']);
+            rows.push(['  Status Tracking (5 screens)', '', '']);
+            rows.push(['    - Kanban Board', '5h', '$75']);
+            rows.push(['    - List View', '2.5h', '$38']);
+            rows.push(['    - Basic Dashboard', '3h', '$45']);
+            rows.push(['    - Stage Config (Admin)', '2.5h', '$38']);
+            rows.push(['    - Move Confirmation Modal', '1h', '$15']);
+            rows.push(['  Team Management (4 screens)', '', '']);
+            rows.push(['    - Team Directory', '2h', '$30']);
+            rows.push(['    - Invite via Email', '1.5h', '$23']);
+            rows.push(['    - Member Profile', '1.5h', '$23']);
+            rows.push(['    - Edit Member Modal', '1h', '$15']);
+            rows.push(['  Global/System (10 screens)', '', '']);
+            rows.push(['    - Sign Up Flow (2 steps)', '3h', '$45']);
+            rows.push(['    - Login', '1.5h', '$23']);
+            rows.push(['    - Forgot Password', '1h', '$15']);
+            rows.push(['    - Onboarding (3 slides)', '2h', '$30']);
+            rows.push(['    - Home Dashboard', '3h', '$45']);
+            rows.push(['    - Settings', '2h', '$30']);
+            rows.push(['    - Profile', '1.5h', '$23']);
+            rows.push(['    - Notifications', '2h', '$30']);
+            rows.push(['    - Error States (set)', '1.5h', '$23']);
+            rows.push(['    - Loading/Empty States', '1.5h', '$23']);
+            rows.push(['']);
+
+            // Product Page
+            rows.push(['PRODUCT PAGE', '10h', '$150']);
+            rows.push(['  - Hero Section', '', '']);
+            rows.push(['  - Problem/Features', '', '']);
+            rows.push(['  - How it Works', '', '']);
+            rows.push(['  - Social Proof', '', '']);
+            rows.push(['  - Pricing Section', '', '']);
+            rows.push(['  - FAQ + Footer', '', '']);
+            rows.push(['  - Mobile Responsive', '', '']);
+            rows.push(['']);
+
+            // Prototype
+            rows.push(['INTERACTIVE PROTOTYPE', '8h', '$120']);
+            rows.push(['  - Service Request Intake prototype', '2h', '$30']);
+            rows.push(['  - Task Creation & Assignment prototype', '2h', '$30']);
+            rows.push(['  - Status Tracking prototype', '2h', '$30']);
+            rows.push(['  - Team Management prototype', '2h', '$30']);
+            rows.push(['']);
+
+            // Handoff
+            rows.push(['DEVELOPER HANDOFF', '4h', '$60']);
+            rows.push(['  - Interaction specifications', '2h', '$30']);
+            rows.push(['  - Design customization rules', '2h', '$30']);
+            rows.push(['']);
+
+            rows.push(['DESIGN TASKS SUBTOTAL', '115h', '$1,725']);
+            rows.push(['']);
 
             // UI Kit
             const uikit = document.querySelector('input[name="uikit"]:checked');
             if (uikit) {
-                const label = uikit.closest('label').querySelector('.font-medium').textContent;
-                rows.push(['', '', '']);
+                const label = uikit.closest('label').querySelector('.font-medium').textContent.split('↗')[0].trim();
                 rows.push(['=== UI KIT LICENSE ===', '', '']);
-                rows.push([label, '-', '$' + uikit.dataset.price]);
+                rows.push([label + ' (Figma design kit)', '-', '$' + uikit.dataset.price]);
+                rows.push(['']);
             }
 
             // Additional Screens
             if (additionalScreens > 0) {
                 const comments = document.getElementById('screen-comments').value.trim();
-                rows.push(['', '', '']);
                 rows.push(['=== ADDITIONAL SCREENS ===', '', '']);
-                rows.push([additionalScreens + ' additional screens', additionalScreens * SCREEN_HOURS + 'h', '$' + (additionalScreens * SCREEN_PRICE)]);
+                rows.push([additionalScreens + ' additional screens @ $30 each', additionalScreens * SCREEN_HOURS + 'h', '$' + (additionalScreens * SCREEN_PRICE)]);
                 if (comments) {
-                    rows.push(['Comments: ' + comments, '', '']);
+                    rows.push(['Description: ' + comments, '', '']);
                 }
+                rows.push(['']);
             }
 
             // Add-ons
             const addons = document.querySelectorAll('input[name="addon"]:checked');
             if (addons.length > 0) {
-                rows.push(['', '', '']);
                 rows.push(['=== OPTIONAL ADD-ONS ===', '', '']);
                 addons.forEach(input => {
                     const label = input.closest('label').querySelector('.font-medium').textContent;
                     rows.push([label, input.dataset.hours + 'h', '$' + input.dataset.price]);
                 });
+                rows.push(['']);
             }
 
             // Total
-            rows.push(['', '', '']);
-            rows.push(['=== TOTAL ===', '', '']);
+            rows.push(['=== GRAND TOTAL ===', '', '']);
             rows.push(['Total Hours', document.getElementById('total-hours').textContent + 'h', '']);
             rows.push(['Total Price', '', '$' + document.getElementById('total-price').textContent]);
+            rows.push(['']);
+
+            // Client Notes
+            if (clientNotes) {
+                rows.push(['=== CLIENT NOTES ===', '', '']);
+                rows.push([clientNotes, '', '']);
+                rows.push(['']);
+            }
+
+            // Terms
+            rows.push(['=== TERMS ===', '', '']);
+            rows.push(['- Quote covers up to 30 unique screens', '', '']);
+            rows.push(['- Additional screens billed at $30/screen', '', '']);
+            rows.push(['- 3 revision rounds included', '', '']);
+            rows.push(['- 5-6 week timeline (48h feedback turnaround)', '', '']);
 
             // Generate CSV
             const csv = rows.map(row => row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(',')).join('\n');
@@ -651,7 +747,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'x-project-quote.csv';
+            a.download = 'x-project-quote-' + today.replace(/,?\s+/g, '-') + '.csv';
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -681,40 +777,40 @@
         function buildQuoteSummary() {
             let summary = [];
 
-            summary.push('=== DESIGN OUTPUTS (Base Package) ===');
-            summary.push('Discovery: 10h - $150');
-            summary.push('Wireframes: 16h - $240');
-            summary.push('Design System: 3h - $45');
-            summary.push('Hi-Fi App Screens (30): 64h - $960');
-            summary.push('Product Page: 10h - $150');
-            summary.push('Interactive Prototype: 8h - $120');
-            summary.push('Developer Handoff: 4h - $60');
+            summary.push('DESIGN TASKS (Base Package):');
+            summary.push('- Discovery: 10h - $150');
+            summary.push('- Wireframes: 16h - $240');
+            summary.push('- Design System: 3h - $45');
+            summary.push('- Hi-Fi App Screens (30): 64h - $960');
+            summary.push('- Product Page: 10h - $150');
+            summary.push('- Interactive Prototype: 8h - $120');
+            summary.push('- Developer Handoff: 4h - $60');
             summary.push('Subtotal: 115h - $1,725');
 
             const uikit = document.querySelector('input[name="uikit"]:checked');
             if (uikit) {
-                const label = uikit.closest('label').querySelector('.font-medium').textContent;
-                summary.push(`\n=== UI KIT LICENSE ===\n${label}: $${uikit.dataset.price}`);
+                const label = uikit.closest('label').querySelector('.font-medium').textContent.split('↗')[0].trim();
+                summary.push(`\nUI KIT LICENSE:\n${label}: $${uikit.dataset.price}`);
             }
 
             if (additionalScreens > 0) {
                 const comments = document.getElementById('screen-comments').value.trim();
-                summary.push(`\n=== ADDITIONAL SCREENS ===\n${additionalScreens} screens: ${additionalScreens * SCREEN_HOURS}h - $${additionalScreens * SCREEN_PRICE}`);
+                summary.push(`\nADDITIONAL SCREENS:\n${additionalScreens} screens: ${additionalScreens * SCREEN_HOURS}h - $${additionalScreens * SCREEN_PRICE}`);
                 if (comments) {
-                    summary.push(`Comments: ${comments}`);
+                    summary.push(`Description: ${comments}`);
                 }
             }
 
             const addons = document.querySelectorAll('input[name="addon"]:checked');
             if (addons.length > 0) {
-                summary.push('\n=== OPTIONAL ADD-ONS ===');
+                summary.push('\nOPTIONAL ADD-ONS:');
                 addons.forEach(input => {
                     const label = input.closest('label').querySelector('.font-medium').textContent;
-                    summary.push(`${label}: ${input.dataset.hours}h - $${input.dataset.price}`);
+                    summary.push(`- ${label}: ${input.dataset.hours}h - $${input.dataset.price}`);
                 });
             }
 
-            summary.push(`\n=== TOTAL ===\nHours: ${document.getElementById('total-hours').textContent}h\nPrice: $${document.getElementById('total-price').textContent}`);
+            summary.push(`\nGRAND TOTAL:\nHours: ${document.getElementById('total-hours').textContent}h\nPrice: $${document.getElementById('total-price').textContent}`);
 
             return summary.join('\n');
         }
@@ -725,45 +821,54 @@
             const form = event.target;
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Processing...';
+            submitBtn.textContent = 'Sending...';
 
             const formData = new FormData(form);
+            const clientName = formData.get('client_name');
+            const clientNotes = formData.get('notes') || '';
             const quoteSummary = buildQuoteSummary();
             const screenComments = document.getElementById('screen-comments').value.trim();
 
-            // Build email content
-            const emailBody = `
-QUOTE APPROVED - X Project
+            // Build email data for FormSubmit
+            const emailData = {
+                _subject: 'QUOTE APPROVED - X Project - ' + clientName,
+                _template: 'table',
+                client_name: clientName,
+                client_notes: clientNotes || 'None',
+                additional_screen_comments: screenComments || 'None',
+                quote_summary: quoteSummary,
+                total_hours: document.getElementById('total-hours').textContent + 'h',
+                total_price: '$' + document.getElementById('total-price').textContent,
+                submitted_at: new Date().toLocaleString()
+            };
 
-CLIENT INFORMATION
-==================
-Name: ${formData.get('client_name')}
-Email: ${formData.get('client_email')}
-Company: ${formData.get('company') || 'Not provided'}
+            try {
+                // Send email via FormSubmit.co (free service, no signup)
+                const response = await fetch('https://formsubmit.co/ajax/thanh.quoc731@gmail.com', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(emailData)
+                });
 
-CLIENT NOTES
-============
-${formData.get('notes') || 'None'}
-
-${screenComments ? `ADDITIONAL SCREEN COMMENTS\n==========================\n${screenComments}\n` : ''}
-QUOTE DETAILS
-=============
-${quoteSummary}
-
----
-Quote approved via X Project Quote Tool
-            `.trim();
-
-            // Download CSV first
-            downloadCSV();
-
-            // Send email via mailto
-            const mailtoLink = `mailto:thanh.quoc731@gmail.com?subject=${encodeURIComponent('QUOTE APPROVED - X Project - ' + formData.get('client_name'))}&body=${encodeURIComponent(emailBody)}`;
-            window.location.href = mailtoLink;
-
-            hideSubmitModal();
-            showSuccessModal();
-            form.reset();
+                if (response.ok) {
+                    // Download CSV after successful email
+                    downloadCSV(clientName, clientNotes);
+                    hideSubmitModal();
+                    showSuccessModal();
+                    form.reset();
+                } else {
+                    throw new Error('Email failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Still download CSV even if email fails
+                downloadCSV(clientName, clientNotes);
+                hideSubmitModal();
+                alert('CSV downloaded! Email notification may have failed - please also send a copy to thanh.quoc731@gmail.com');
+            }
 
             submitBtn.disabled = false;
             submitBtn.textContent = 'Approve & Download';
